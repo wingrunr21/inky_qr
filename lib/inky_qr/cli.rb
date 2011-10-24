@@ -1,6 +1,6 @@
 require 'rubikon'
 
-module InkyQr
+module InkyQR
   class Cli < Rubikon::Application::Base
     def default
 

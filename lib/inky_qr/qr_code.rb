@@ -1,13 +1,15 @@
-module InkyQr
-  class QrCode < RQRCode::QrCode
+require 'rqrcode_png'
+
+module InkyQR
+  class QRCode < RQRCode::QRCode
     IMAGE_DIR = File.expand_path(File.join(__FILE__, '../../..', 'images'))
 
-    def initialize(string, *args)
+    def initialize(string)
       # Hash that will lazy-load the inky images
       @inkys = {}
 
       # Call super
-      super(string, *args)
+      super(string, :size => 6)
 
       # Convert self to image
       @png = self.to_img
@@ -27,15 +29,15 @@ module InkyQr
       # Resize png based on input size
       case size
       when :tiny
-        png = @png.resize(75, 75).replace(@inkys[size], 25, 25)
+        png = @png.resize(75, 75).compose(@inkys[size], 25, 25)
       when :small
-        png = @png.resize(150, 150).replace(@inkys[size], 50, 50)
+        png = @png.resize(150, 150).compose(@inkys[size], 49, 49)
       when :medium
-        png = @png.resize(300, 300).replace(@inkys[size], 100, 100)
+        png = @png.resize(300, 300).compose(@inkys[size], 98, 98)
       when :large
-        png = @png.resize(450, 450).replace(@inkys[size], 150, 150)
+        png = @png.resize(450, 450).compose(@inkys[size], 147, 147)
       when :xlarge
-        png = @png.resize(600, 600).replace(@inkys[size], 200, 200)
+        png = @png.resize(600, 600).compose(@inkys[size], 196, 196)
       end
 
       # Save inky
