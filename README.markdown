@@ -44,5 +44,5 @@ QRCodes can be colorized and resized as needed:
 * `size` - Specified in pixels.  This is the target size, however, the code will shrink the total size so that the number of columns is even across the QR code. Default is 500
 * `border` - Specified in pixels.  This is padding around the QR code.  Default is 0
 
-### TODO ###
+## TODO ##
 * Checks of some kind on input (color codes for example)

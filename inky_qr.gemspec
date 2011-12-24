@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.name        = "inky_qr"
   s.version     = InkyQr::VERSION
   s.authors     = ["Stafford Brunk"]
-  s.email       = ["stafford.brunk@gmail.com"]
-  s.homepage    = "http://www.customink.com"
+  s.email       = ["sbrunk@customink.com"]
+  s.homepage    = "https://github.com/wingrunr21/inky_qr"
   s.summary     = %q{This gem will create QR codes with Inky embedded in the middle}
   s.description = %q{This gem creates QR codes with Inky embedded in the middle.  Inky is set to take up 1/9 of the total area of the QR code}
 
@@ -22,4 +22,5 @@ Gem::Specification.new do |s|
   s.add_dependency "rqrcode", "~> 0.4.2"
   s.add_dependency "nokogiri", "~> 1.5.0"
   s.add_dependency "rubikon", "~> 0.6.0"
+  s.add_dependency "rmagick", "~> 2.13.1"
 end

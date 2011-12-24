@@ -1,6 +1,7 @@
 require 'rqrcode'
 require 'googl'
 require 'nokogiri'
+require 'rmagick'
 
 module InkyQR
   class QRCode < RQRCode::QRCode
@@ -59,14 +60,31 @@ module InkyQR
     # Returns the raw file data for this QRCode
     # The default file type is SVG (image/svg+xml)
     def file_data(type = :svg)
-      @svg.to_xml
+      case type
+      when :svg
+        @svg.to_xml
+      when :png
+        img = Magick::Image::from_blob(@svg.to_xml).first
+        img.format = "png"
+        img.to_blob
+      when :jpeg
+        img = Magick::Image::from_blob(@svg.to_xml).first
+        img.format = "jpeg"
+        img.to_blob
+      when :gif
+        img = Magick::Image::from_blob(@svg.to_xml).first
+        img.format = "gif"
+        img.to_blob
+      else
+        @svg.to_xml
+      end
     end
 
     # Saves the QRCode to the given file
     # The default file saved is an SVG file
     def save(filename, type = :svg)
       File.open(filename, 'w') do |f|
-        f.write(@svg.to_xml)
+        f.write(file_data(type))
       end
     end
   end
