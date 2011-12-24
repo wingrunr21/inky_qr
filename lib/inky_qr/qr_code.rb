@@ -4,6 +4,11 @@ require 'nokogiri'
 
 module InkyQR
   class QRCode < RQRCode::QRCode
+    # Require all renderers
+    Dir[File.join(File.dirname(__FILE__), 'renderers', '*.rb')].each do |file|
+      require file
+    end
+
     attr_reader :size, :color, :border
 
     # Size and color are used here, everything else is passed up the line
@@ -27,30 +32,38 @@ module InkyQR
       @svg = Renderers::SVG.new(self)
     end
 
+    # Resizes and returns a new QRCode
     def resize(size, border = 0)
       InkyQR::QRCode.new(@data, :size => size)
     end
 
+    # Resizes destructively
     def resize!(size, border = 0)
       @size = size
       @svg = Renderers::SVG.new(self)
       self
     end
 
+    # Colorizes and returns a new QRCode
     def colorize(color)
       InkyQR::QRCode.new(@data, :color => color)
     end
 
+    # Colorizes destructively
     def colorize!(color)
       @color = color
       @svg = Renderers::SVG.new(self)
       self
     end
 
+    # Returns the raw file data for this QRCode
+    # The default file type is SVG (image/svg+xml)
     def file_data(type = :svg)
       @svg.to_xml
     end
 
+    # Saves the QRCode to the given file
+    # The default file saved is an SVG file
     def save(filename, type = :svg)
       File.open(filename, 'w') do |f|
         f.write(@svg.to_xml)

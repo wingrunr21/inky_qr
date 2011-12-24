@@ -7,7 +7,6 @@ module InkyQR
       # Map background width to minimize it behind inky
       INKY_BG_MAP = [9,11,13,15,15,15,15,15,15,15,13,13,13,11,5]
 
-
       def initialize(qr_code)
         @code = qr_code
 
@@ -58,7 +57,7 @@ module InkyQR
 
             # Fill with white unless this segment is dark
             fill = "#ffffff"
-            if self.dark?(r, c)
+            if @code.dark?(r, c)
               fill = @code.color
             end
 
@@ -127,16 +126,18 @@ module InkyQR
         # Add inky
         svg << inky
       end
-    end
-  end
 
-  def build_rect(x, y, height, width, fill, doc)
-    rect = Nokogiri::XML::Node.new "rect", doc
-    rect["x"] = x.to_s
-    rect["y"] = y.to_s
-    rect["height"] = height.to_s
-    rect["width"] = width.to_s
-    rect["fill"] = fill
-    rect
+      # Helper method to build a SVG rectangle
+      # Returns a Nokogiri XML node
+      def build_rect(x, y, height, width, fill, doc)
+        rect = Nokogiri::XML::Node.new "rect", doc
+        rect["x"] = x.to_s
+        rect["y"] = y.to_s
+        rect["height"] = height.to_s
+        rect["width"] = width.to_s
+        rect["fill"] = fill
+        rect
+      end
+    end
   end
 end
