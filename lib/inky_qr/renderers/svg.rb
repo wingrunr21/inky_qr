@@ -55,15 +55,17 @@ module InkyQR
             y = r * col_width + @code.border
             x = c * col_width + @code.border
 
-            # Fill with white unless this segment is dark
-            fill = "#ffffff"
+            # Fill with bg_color unless this segment is dark
+            fill = @code.bg_color
             if @code.dark?(r, c)
               fill = @code.color
             end
 
             # Build and add the rect
-            rect = build_rect(x, y, col_width, col_width, fill, @doc)
-            qr_code << rect
+            unless fill.nil?
+              rect = build_rect(x, y, col_width, col_width, fill, @doc)
+              qr_code << rect
+            end
           end
         end
 
@@ -76,23 +78,29 @@ module InkyQR
         offset *= col_width
         offset += @code.border
 
-        # Add background group
-        background = Nokogiri::XML::Node.new "g", @doc
-        background["id"] = "background"
-        svg << background
-
-        # Construct background
+        # Remove foreground tiles for inky background
         bg_width.times do |i|
           # Internal offset to center row
           bg_offset = (bg_width - INKY_BG_MAP[i]) / 2
 
-          # Make rows as wide as specified in the map
           y = i * col_width + offset
-          x = bg_offset * col_width + offset
 
-          # Build and add rect
-          rect = build_rect(x, y, col_width, col_width * INKY_BG_MAP[i], "#ffffff", @doc)
-          background << rect
+          # Cycle over all "touched" tiles and delete the foreground color ones
+          INKY_BG_MAP[i].times do |j|
+            # Make rows as wide as specified in the map
+            x = ((bg_offset + j) * col_width) + offset
+
+            # Find proper rectangle
+            node = @doc.at_css("g#qr_code rect[x='#{x}'][y='#{y}'][fill='#{@code.color}']")
+            unless node.nil?
+              # If our bg is transparent, delete the node, otherwise modify fill color
+              if @code.bg_color.nil?
+                node.remove
+              else
+                node["fill"] = @code.bg_color
+              end
+            end
+          end
         end
 
         # Calculate actual background width in pixels

@@ -10,10 +10,10 @@ module InkyQR
       require file
     end
 
-    attr_reader :size, :color, :border, :svg
+    attr_reader :size, :color, :bg_color, :border, :svg
 
     # Size and color are used here, everything else is passed up the line
-    DEFAULT_OPTIONS = {:size => 500, :color => "#000000", :level => :q, :border => 0}
+    DEFAULT_OPTIONS = {:size => 500, :color => "#000000", :bg_color => nil, :level => :q, :border => 0}
 
     RASTOR_TYPES = [:png, :gif, :jpg, :jpeg]
 
@@ -23,6 +23,7 @@ module InkyQR
       @size = options[:size]
       @color = options[:color]
       @border = options[:border]
+      @bg_color = options[:bg_color]
 
       # Attempt QR Code construction, if string is too long shorten it with goo.gl
       begin
