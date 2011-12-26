@@ -64,7 +64,7 @@ module InkyQR
 
     def file_data(type = :svg)
       if RASTOR_TYPES.include? type
-        rastor = Renderers::Rastor.new(self)
+        rastor = Renderers::Raster.new(self)
         rastor.data(type)
       else
         @svg.to_xml

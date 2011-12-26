@@ -1,6 +1,6 @@
 module InkyQR
   module Renderers
-    class Rastor
+    class Raster
       def initialize(qr_code)
         @code = qr_code
       end
