@@ -1,7 +1,7 @@
 require 'rqrcode'
 require 'googl'
 require 'nokogiri'
-require 'rmagick'
+require 'RMagick'
 
 module InkyQR
   class QRCode < RQRCode::QRCode
@@ -10,10 +10,12 @@ module InkyQR
       require file
     end
 
-    attr_reader :size, :color, :border
+    attr_reader :size, :color, :border, :svg
 
     # Size and color are used here, everything else is passed up the line
     DEFAULT_OPTIONS = {:size => 500, :color => "#000000", :level => :q, :border => 0}
+
+    RASTOR_TYPES = [:png, :gif, :jpg, :jpeg]
 
     def initialize(string, options = {})
       options = DEFAULT_OPTIONS.merge(options)
@@ -59,22 +61,11 @@ module InkyQR
 
     # Returns the raw file data for this QRCode
     # The default file type is SVG (image/svg+xml)
+
     def file_data(type = :svg)
-      case type
-      when :svg
-        @svg.to_xml
-      when :png
-        img = Magick::Image::from_blob(@svg.to_xml).first
-        img.format = "png"
-        img.to_blob
-      when :jpeg
-        img = Magick::Image::from_blob(@svg.to_xml).first
-        img.format = "jpeg"
-        img.to_blob
-      when :gif
-        img = Magick::Image::from_blob(@svg.to_xml).first
-        img.format = "gif"
-        img.to_blob
+      if RASTOR_TYPES.include? type
+        rastor = Renderers::Rastor.new(self)
+        rastor.data(type)
       else
         @svg.to_xml
       end
